@@ -12,7 +12,7 @@ public class TileButton extends JButton {
 
     private Tile tile;
 
-    TileButton(int x, int y) {
+    public TileButton(int x, int y) {
         super();
         this.x = x;
         this.y = y;

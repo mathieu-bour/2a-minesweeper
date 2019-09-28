@@ -1,13 +1,14 @@
 package fr.mathieubour.minesweeper.game;
 
+import java.io.Serializable;
 import java.util.Vector;
 
-public class Matrix<T> {
+public class Matrix<T> implements Serializable {
     private int sizeX;
     private int sizeY;
     private Vector<Vector<T>> internal;
 
-    public Matrix(int sizeX, int sizeY, T defaultValue) {
+    Matrix(int sizeX, int sizeY, T defaultValue) {
         this.sizeX = sizeX;
         this.sizeY = sizeY;
 
@@ -22,11 +23,11 @@ public class Matrix<T> {
         }
     }
 
-    public T get(int x, int y) {
+    T get(int x, int y) {
         return this.internal.get(x).get(y);
     }
 
-    public void set(int x, int y, T value) {
+    void set(int x, int y, T value) {
         this.internal.get(x).set(y, value);
     }
 

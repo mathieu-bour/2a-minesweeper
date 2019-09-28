@@ -1,13 +1,11 @@
 package fr.mathieubour.minesweeper.client.ui;
 
+import fr.mathieubour.minesweeper.client.panels.HomePanel;
+
 import javax.swing.*;
 
 public class GameFrame extends JFrame {
-    static GameFrame instance;
-    private JMenuBar menuBar;
-    private JMenu fileMenu;
-    private JMenuItem newGameMenuItem;
-    private JMenuItem quitItemMenu;
+    public static GameFrame instance;
 
     private JPanel panel;
 
@@ -17,9 +15,9 @@ public class GameFrame extends JFrame {
         // Preload icons
         AssetsLoader.preload();
         configure();
-        makeMenuBar();
+        setJMenuBar(new GameMenu());
 
-        JPanel panel = new FieldPanel();
+        JPanel panel = new HomePanel();
         setContentPane(panel);
         setVisible(true);
     }
@@ -30,18 +28,5 @@ public class GameFrame extends JFrame {
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setResizable(false);
-    }
-
-    private void makeMenuBar() {
-        menuBar = new JMenuBar();
-        fileMenu = new JMenu("File");
-        newGameMenuItem = new JMenuItem("New game");
-        quitItemMenu = new JMenuItem("Exit");
-
-        fileMenu.add(newGameMenuItem);
-        fileMenu.add(quitItemMenu);
-        menuBar.add(fileMenu);
-
-        setJMenuBar(menuBar);
     }
 }

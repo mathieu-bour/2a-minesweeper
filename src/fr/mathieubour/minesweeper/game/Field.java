@@ -1,12 +1,13 @@
 package fr.mathieubour.minesweeper.game;
 
+import java.io.Serializable;
 import java.util.Random;
 
 /**
  * @author Mathieu Bour
  * @version 1.0.0
  */
-public class Field {
+public class Field implements Serializable {
     private int rows;
     private int columns;
     private int mines;

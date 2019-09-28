@@ -1,6 +1,8 @@
-package fr.mathieubour.minesweeper.client.ui;
+package fr.mathieubour.minesweeper.client.panels;
 
 import fr.mathieubour.minesweeper.client.listeners.TileButtonListener;
+import fr.mathieubour.minesweeper.client.ui.GameFrame;
+import fr.mathieubour.minesweeper.client.ui.TileButton;
 import fr.mathieubour.minesweeper.game.Field;
 import fr.mathieubour.minesweeper.game.Level;
 

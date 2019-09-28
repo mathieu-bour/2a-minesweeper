@@ -23,8 +23,6 @@ public class AssetsLoader {
     };
 
     static void preload() {
-        String ASSETS_DIR = "../../assets";
-
         for (String image : imagesNames) {
             try {
                 Image img = ImageIO.read(AssetsLoader.class.getResource("../../assets/" + image));
