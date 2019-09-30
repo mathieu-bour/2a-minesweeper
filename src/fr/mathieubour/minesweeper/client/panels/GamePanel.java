@@ -9,7 +9,7 @@ public class GamePanel extends JPanel {
     private GamePanel() {
         super(new BorderLayout());
         add(FieldPanel.getInstance(), BorderLayout.CENTER);
-        add(ScorePanel.getInstance(), BorderLayout.EAST);
+        add(ScoreboardPanel.getInstance(), BorderLayout.EAST);
     }
 
     public static synchronized GamePanel getInstance() {

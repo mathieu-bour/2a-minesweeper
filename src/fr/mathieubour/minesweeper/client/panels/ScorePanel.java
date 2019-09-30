@@ -1,48 +1,61 @@
 package fr.mathieubour.minesweeper.client.panels;
 
-import fr.mathieubour.minesweeper.client.states.GameState;
 import fr.mathieubour.minesweeper.game.Player;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.HashMap;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class ScorePanel extends JPanel {
-    private static ScorePanel instance;
+    private JLabel colorLabel = new JLabel();
+    private JLabel nameLabel = new JLabel();
+    private JLabel scoreLabel = new JLabel();
 
-    private ScorePanel() {
+    ScorePanel() {
         super(new GridBagLayout());
         draw();
     }
 
-    public static synchronized ScorePanel getInstance() {
-        if (instance == null) {
-            instance = new ScorePanel();
-        }
+    ScorePanel(Color color, String name, int score) {
+        this();
+        setColor(color);
+        setPlayerName(name);
+        setPlayerScore(score);
+    }
 
-        return instance;
+    ScorePanel(Player player) {
+        this(player.getColor(), player.getName(), player.getScore());
     }
 
     void draw() {
-        HashMap<String, Player> players = GameState.getInstance().getPlayers();
+        Dimension dimension = new Dimension(15, 15);
+        colorLabel.setMinimumSize(dimension);
+        colorLabel.setMaximumSize(dimension);
 
         GridBagConstraints constraints = new GridBagConstraints();
         constraints.anchor = GridBagConstraints.WEST;
         constraints.insets = new Insets(10, 10, 10, 10);
 
-        AtomicInteger y = new AtomicInteger();
+        constraints.gridy = 0;
+        constraints.gridx = 0;
 
-        players.forEach((key, player) -> {
-            JLabel username = new JLabel(player.getName());
-            constraints.gridx = 0;
-            constraints.gridy = y.get();
-            add(username, constraints);
+        add(colorLabel, constraints);
 
-            JLabel score = new JLabel(Integer.toString(player.getScore()));
-            constraints.gridx = 1;
-            add(score, constraints);
-            y.getAndIncrement();
-        });
+        constraints.gridx++;
+        add(nameLabel, constraints);
+
+        constraints.gridx++;
+        add(scoreLabel, constraints);
+    }
+
+    void setColor(Color color) {
+        colorLabel.setBackground(color);
+    }
+
+    void setPlayerName(String name) {
+        nameLabel.setText(name);
+    }
+
+    void setPlayerScore(int score) {
+        scoreLabel.setText(Integer.toString(score));
     }
 }
