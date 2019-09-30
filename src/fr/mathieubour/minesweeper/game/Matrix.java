@@ -3,44 +3,50 @@ package fr.mathieubour.minesweeper.game;
 import java.io.Serializable;
 import java.util.Vector;
 
-public class Matrix<T> implements Serializable {
+public class Matrix<T> implements Serializable, Cloneable {
     private int sizeX;
     private int sizeY;
     private Vector<Vector<T>> internal;
 
-    Matrix(int sizeX, int sizeY, T defaultValue) {
+    public Matrix(int sizeX, int sizeY, T defaultValue) {
         this.sizeX = sizeX;
         this.sizeY = sizeY;
 
-        this.internal = new Vector<>();
+        internal = new Vector<>();
 
         for (int x = 0; x < this.sizeX; x++) {
-            this.internal.add(new Vector<>(this.sizeY));
+            internal.add(new Vector<>(this.sizeY));
 
             for (int y = 0; y < this.sizeY; y++) {
-                this.internal.get(x).add(defaultValue);
+                internal.get(x).add(defaultValue);
             }
         }
     }
 
-    T get(int x, int y) {
-        return this.internal.get(x).get(y);
+    public T get(int x, int y) {
+        return internal.get(x).get(y);
     }
 
-    void set(int x, int y, T value) {
-        this.internal.get(x).set(y, value);
+    public void set(int x, int y, T value) {
+        internal.get(x).set(y, value);
     }
 
     public String toString() {
         StringBuilder str = new StringBuilder();
 
-        for (int x = 0; x < this.sizeX; x++) {
-            for (int y = 0; y < this.sizeY; y++) {
-                str.append(this.get(x, y).toString());
+        for (int x = 0; x < sizeX; x++) {
+            for (int y = 0; y < sizeY; y++) {
+                str.append(get(x, y).toString());
             }
             str.append("\n");
         }
 
         return str.toString();
+    }
+
+    public Matrix<T> clone() throws CloneNotSupportedException {
+        Matrix<T> matrix = (Matrix<T>) super.clone();
+        matrix.internal = (Vector<Vector<T>>) this.internal.clone();
+        return matrix;
     }
 }

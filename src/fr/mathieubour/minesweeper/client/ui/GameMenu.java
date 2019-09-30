@@ -1,30 +1,47 @@
 package fr.mathieubour.minesweeper.client.ui;
 
-import javax.swing.*;
-import java.util.HashMap;
+import fr.mathieubour.minesweeper.client.panels.FieldPanel;
+import fr.mathieubour.minesweeper.client.panels.LoginPanel;
 
-public class GameMenu extends JMenuBar {
-    public static GameMenu INSTANCE;
-    HashMap<String, JMenuItem> triggers = new HashMap<>();
+import javax.swing.*;
+
+/**
+ * The main menu.
+ */
+class GameMenu extends JMenuBar {
+    private static GameMenu instance;
 
     GameMenu() {
-        GameMenu.INSTANCE = this;
+        // Add menu items to their parent menu
+
+        // Server
         JMenu serverMenu = new JMenu("Server");
         JMenuItem connectMenuItem = new JMenuItem("Connect");
-        JMenuItem disconnectMenuItem = new JMenuItem("Disconnect");
-
-        JMenu fileMenu = new JMenu("File");
-        JMenuItem exitItemMenu = new JMenuItem("Exit");
-
         serverMenu.add(connectMenuItem);
+        JMenuItem disconnectMenuItem = new JMenuItem("Disconnect");
         serverMenu.add(disconnectMenuItem);
-        fileMenu.add(exitItemMenu);
 
-        this.add(serverMenu);
-        this.add(fileMenu);
+        // Debug
+        JMenu debugMenu = new JMenu("Debug");
+        JMenuItem loginItemMenu = new JMenuItem("Login");
+        JMenuItem gameItemMenu = new JMenuItem("Game");
 
-        this.triggers.put("connect", connectMenuItem);
-        this.triggers.put("disconnect", disconnectMenuItem);
-        this.triggers.put("exit", exitItemMenu);
+        debugMenu.add(loginItemMenu);
+        debugMenu.add(gameItemMenu);
+
+        // Add menus to the menu bar
+        add(serverMenu);
+        add(debugMenu);
+
+        // Add actions
+        GameFrame gameFrame = GameFrame.getInstance();
+        loginItemMenu.addActionListener(actionEvent -> {
+            gameFrame.setContentPane(LoginPanel.getInstance());
+            gameFrame.revalidate();
+        });
+        gameItemMenu.addActionListener(actionEvent -> {
+            gameFrame.setContentPane(FieldPanel.getInstance());
+            gameFrame.revalidate();
+        });
     }
 }

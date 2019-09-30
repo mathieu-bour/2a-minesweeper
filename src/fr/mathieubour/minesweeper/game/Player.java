@@ -1,30 +1,52 @@
 package fr.mathieubour.minesweeper.game;
 
+import java.awt.*;
 import java.io.Serializable;
-import java.util.Map;
 
 public class Player implements Serializable {
     private String id;
     private String name;
-    private String color;
+    private Color color;
+    private boolean alive = true;
+    private int score = 0;
 
-    Player(String name) {
+    public Player(String name) {
         this.name = name;
-        this.autoDiscoverId();
     }
 
-    Player(String name, String id) {
-        this.name = name;
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
         this.id = id;
     }
 
-    private void autoDiscoverId() {
-        Map<String, String> env = System.getenv();
+    public Color getColor() {
+        return color;
+    }
 
-        if (env.containsKey("COMPUTERNAME")) {
-            this.id = env.get("COMPUTERNAME").toLowerCase();
-        } else {
-            this.id = env.getOrDefault("HOSTNAME", "unknown");
-        }
+    public void setColor(Color color) {
+        this.color = color;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public boolean isAlive() {
+        return alive;
+    }
+
+    public void setAlive(boolean alive) {
+        this.alive = alive;
+    }
+
+    public int getScore() {
+        return score;
+    }
+
+    public void setScore(int score) {
+        this.score = score;
     }
 }

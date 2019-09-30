@@ -2,10 +2,14 @@ package fr.mathieubour.minesweeper.packets;
 
 import fr.mathieubour.minesweeper.game.Player;
 
-public class Packet1Login implements Packet {
+public abstract class PlayerPacket extends Packet {
     private Player player;
 
-    Packet1Login(Player player) {
+    public PlayerPacket(Player player) {
         this.player = player;
+    }
+
+    public Player getPlayer() {
+        return player;
     }
 }

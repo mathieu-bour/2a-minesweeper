@@ -1,12 +1,18 @@
 package fr.mathieubour.minesweeper.client.ui;
 
+import fr.mathieubour.minesweeper.game.Player;
 import fr.mathieubour.minesweeper.game.Tile;
+import fr.mathieubour.minesweeper.game.TileStatus;
+import fr.mathieubour.minesweeper.utils.Log;
 
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * Represent a game tile. A tile is identified by its coordinates and can have multiple statuses.
+ */
 public class TileButton extends JButton {
-    public static int TILE_SIZE_PX = 40;
+    public static int TILE_SIZE_PX = 30;
     public int x;
     public int y;
 
@@ -14,19 +20,41 @@ public class TileButton extends JButton {
 
     public TileButton(int x, int y) {
         super();
+
+        setBorder(null);
+        // setBorderPainted(false);
+        setMargin(new Insets(0, 0, 0, 0));
+        // setContentAreaFilled(false);
+        setPressedIcon(AssetsLoader.images.get("pristine-pressed.png"));
+
         this.x = x;
         this.y = y;
         setTile(new Tile());
+
         redraw();
     }
 
     public void setTile(Tile tile) {
         this.tile = tile;
+        redraw();
+    }
+
+    public Tile getTile() {
+        return tile;
     }
 
     public void redraw() {
-        setMargin(new Insets(0, 0, 0, 0));
+        Log.info("Drawing (" + x + "," + y + "): " + tile.getStatus() + ":" + tile.getBombsAround());
+
         setIcon(AssetsLoader.images.get(getImageName()));
+        setDisabledIcon(AssetsLoader.images.get(getImageName()));
+
+        if (tile.getSweeper() != null) {
+            Player sweeper = tile.getSweeper();
+            setBackground(sweeper.getColor());
+        }
+
+        setEnabled(tile.getStatus() == TileStatus.PRISTINE);
     }
 
     private String getImageName() {
@@ -36,9 +64,9 @@ public class TileButton extends JButton {
             case MINED:
                 return "bomb.png";
             case EMPTY:
-                return this.tile.getBombsAround() + ".png";
+                return tile.getBombsAround() + ".png";
             default:
-                throw new IllegalStateException("Unexpected value: " + this.tile.getStatus());
+                throw new IllegalStateException("Unexpected value: " + tile.getStatus());
         }
     }
 }

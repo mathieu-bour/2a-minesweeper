@@ -1,5 +1,7 @@
 package fr.mathieubour.minesweeper.game;
 
+import java.io.Serializable;
+
 /**
  * Represents a tile and its status.
  *
@@ -7,9 +9,11 @@ package fr.mathieubour.minesweeper.game;
  * @version 1.0
  * @since 1.0
  */
-public class Tile {
+public class Tile implements Serializable, Cloneable {
     private TileStatus status;
     private int bombsAround = 0;
+    private Player sweeper;
+
 
     public Tile() {
         this(TileStatus.PRISTINE);
@@ -35,6 +39,10 @@ public class Tile {
         return this.status;
     }
 
+    public synchronized void setStatus(TileStatus status) {
+        this.status = status;
+    }
+
     /**
      * Get the number of bombs around the tile.
      *
@@ -48,17 +56,11 @@ public class Tile {
         this.bombsAround = newBombsAround;
     }
 
-    @Override
-    public String toString() {
-        switch (this.status) {
-            case EMPTY:
-                return " ";
-            case MINED:
-                return "X";
-            case PRISTINE:
-                return "?";
-            default:
-                return "E";
-        }
+    public Player getSweeper() {
+        return sweeper;
+    }
+
+    public synchronized void setSweeper(Player sweeper) {
+        this.sweeper = sweeper;
     }
 }

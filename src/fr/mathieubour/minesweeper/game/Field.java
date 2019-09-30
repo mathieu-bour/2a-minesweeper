@@ -7,11 +7,11 @@ import java.util.Random;
  * @author Mathieu Bour
  * @version 1.0.0
  */
-public class Field implements Serializable {
+public class Field implements Serializable, Cloneable {
     private int rows;
     private int columns;
-    private int mines;
-    private Matrix<Tile> grid;
+    private int minesCount;
+    private Matrix<Tile> tileMatrix;
 
     /**
      * Build the field using a predefined difficulty.
@@ -23,108 +23,30 @@ public class Field implements Serializable {
             case EASY:
                 this.rows = 10;
                 this.columns = 10;
-                this.mines = 15;
+                this.minesCount = 15;
                 break;
             case MEDIUM:
                 this.rows = 20;
                 this.columns = 20;
-                this.mines = 50;
+                this.minesCount = 50;
                 break;
             case HARD:
                 this.rows = 30;
                 this.columns = 30;
-                this.mines = 150;
+                this.minesCount = 150;
                 break;
-            case CUSTOM:
-            default:
-                // throw new Exception("CUSTOM difficulty require columns, rows and mines count.");
         }
 
-        this.reset();
+        this.initialize();
     }
 
-    /**
-     * Create a custom field.
-     *
-     * @param rows    The number of rows of the grid.
-     * @param columns The number of columns of teh grid.
-     * @param mines   The number of mines into the field. Must be lower that the number of cases (rows * columns).
-     * @throws Exception
-     */
-    public Field(int rows, int columns, int mines) throws Exception {
-        if (rows * columns < mines) {
-            throw new Exception("Too few cases to handle " + mines + " mines! " +
-                    "(Got a " + columns + " by " + rows + " field)");
-        }
-
-
+    public Field(int rows, int columns, int minesCount) {
         this.rows = rows;
         this.columns = columns;
-        this.mines = mines;
+        this.minesCount = minesCount;
 
-        this.reset();
+        this.initialize();
     }
-
-    /**
-     * Reset the field to empty (no mines).
-     */
-    public void reset() {
-        this.grid = new Matrix<>(this.columns, this.rows, new Tile());
-    }
-
-    /**
-     * Generate a new mine field base don the parameters of the fields (rows, columns, number of mines).
-     */
-    public void generate() {
-        int x, y;
-        Random rand = new Random(System.currentTimeMillis());
-
-        for (int i = 0; i < this.mines; i++) {
-            do {
-                x = rand.nextInt(this.columns - 1);
-                y = rand.nextInt(this.rows - 1);
-            } while (this.grid.get(x, y).getStatus() == TileStatus.MINED);
-
-            this.grid.set(x, y, new Tile(TileStatus.MINED));
-        }
-    }
-
-    /**
-     * Print the field into the console, using (X as mine, . as empty).
-     */
-    public void print() {
-        System.out.println(this.grid.toString());
-    }
-
-    public int around(int x, int y) {
-        int count = 0;
-        int[][] coords = {
-                {x - 1, y - 1},
-                {x - 1, y},
-                {x - 1, y + 1},
-                {x, y - 1},
-                {x, y + 1},
-                {x + 1, y - 1},
-                {x + 1, y},
-                {x + 1, y + 1}
-        };
-
-        for (int[] coord : coords) {
-            int mineX = coord[0];
-            int mineY = coord[1];
-
-            boolean xValid = 0 <= mineX && mineX < this.columns; // valid x coords
-            boolean yValid = 0 <= mineY && mineY < this.rows; // valid y coords
-            boolean hasMine = this.grid.get(x, y).getStatus() == TileStatus.MINED; // there is a mine here!
-
-            if (xValid && yValid && hasMine) {
-                count++;
-            }
-        }
-
-        return count;
-    }
-
 
     public int getRows() {
         return rows;
@@ -132,5 +54,89 @@ public class Field implements Serializable {
 
     public int getColumns() {
         return columns;
+    }
+
+    public int getMinesCount() {
+        return minesCount;
+    }
+
+    public Matrix<Tile> getTileMatrix() {
+        return tileMatrix;
+    }
+
+    /**
+     * Create the Matrix using the columns/rows parameters.
+     */
+    private void initialize() {
+        tileMatrix = new Matrix<>(columns, rows, null);
+
+        for (int x = 0; x < getColumns(); x++) {
+            for (int y = 0; y < getRows(); y++) {
+                tileMatrix.set(x, y, new Tile(TileStatus.PRISTINE));
+            }
+        }
+    }
+
+    /**
+     * Generate a new mine field base don the parameters of the fields (rows, columns, number of mines).
+     */
+    public void placeMines() {
+        int x, y;
+        Random rand = new Random(System.currentTimeMillis());
+
+        for (int i = 0; i < minesCount; i++) {
+            do {
+                x = rand.nextInt(columns - 1);
+                y = rand.nextInt(rows - 1);
+            } while (tileMatrix.get(x, y).getStatus() == TileStatus.MINED);
+
+            tileMatrix.get(x, y).setStatus(TileStatus.MINED);
+        }
+
+        // Compute the "mines around" values for each tile of the field.
+        for (x = 0; x < getColumns(); x++) {
+            for (y = 0; y < getRows(); y++) {
+                Tile tile = tileMatrix.get(x, y);
+                tile.setBombsAround(around(x, y));
+
+                if (tile.getStatus() == TileStatus.PRISTINE) {
+                    tile.setStatus(TileStatus.EMPTY);
+                }
+            }
+        }
+    }
+
+    /**
+     * Get the mines around a given tile, identified by its x and y coordinates.
+     *
+     * @param x The x coordinate
+     * @param y The y coordinate
+     * @return The number of mines around the tile (between 0 and 8).
+     */
+    private int around(int x, int y) {
+        int count = 0;
+
+        for (int dx = -1; dx <= 1; dx++) {
+            for (int dy = -1; dy <= 1; dy++) {
+                int xx = x + dx;
+                int yy = y + dy;
+
+                boolean isSelf = dx == 0 && dy == 0;
+                boolean xValid = 0 <= xx && xx < columns;
+                boolean yValid = 0 <= yy && yy < rows;
+
+                if (!xValid || !yValid || isSelf) {
+                    continue;
+                }
+
+                boolean hasMine = tileMatrix.get(xx, yy).getStatus() == TileStatus.MINED;
+
+                if (hasMine) {
+                    count++;
+                }
+            }
+        }
+
+        return count;
     }
 }

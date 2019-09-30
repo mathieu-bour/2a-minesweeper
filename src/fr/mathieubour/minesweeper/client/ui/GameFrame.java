@@ -1,15 +1,17 @@
 package fr.mathieubour.minesweeper.client.ui;
 
-import fr.mathieubour.minesweeper.client.panels.HomePanel;
+import fr.mathieubour.minesweeper.client.panels.LoginPanel;
 
 import javax.swing.*;
 
 public class GameFrame extends JFrame {
-    public static GameFrame instance;
+    private static GameFrame instance;
 
     private JPanel panel;
 
-    public void init() {
+    public GameFrame() {
+        super("Minesweeper - Home");
+
         GameFrame.instance = this;
 
         // Preload icons
@@ -17,13 +19,19 @@ public class GameFrame extends JFrame {
         configure();
         setJMenuBar(new GameMenu());
 
-        JPanel panel = new HomePanel();
-        setContentPane(panel);
+        setContentPane(LoginPanel.getInstance());
         setVisible(true);
     }
 
+    public static synchronized GameFrame getInstance() {
+        if (instance == null) {
+            instance = new GameFrame();
+        }
+
+        return instance;
+    }
+
     private void configure() {
-        setTitle("Minesweeper - Home");
         setSize(800, 600);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

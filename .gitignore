@@ -12,5 +12,6 @@ hs_err_pid*
 
 .mtj.tmp/
 .idea/
+dist/
 docs/
 out/

@@ -6,27 +6,48 @@ import java.awt.*;
 import java.io.IOException;
 import java.util.HashMap;
 
-public class AssetsLoader {
+/**
+ * Load the images (the tiles textures) on start-up.
+ */
+class AssetsLoader {
+    /**
+     * The images, indexed by their filename.
+     */
     static HashMap<String, ImageIcon> images = new HashMap<>();
+
+    /**
+     * The images filenames to load.
+     */
     private static String[] imagesNames = {
-            "0.png",
-            "1.png",
-            "2.png",
-            "3.png",
-            "4.png",
-            "5.png",
-            "6.png",
-            "7.png",
-            "8.png",
-            "bomb.png",
-            "pristine.png"
+        "0.png",
+        "1.png",
+        "2.png",
+        "3.png",
+        "4.png",
+        "5.png",
+        "6.png",
+        "7.png",
+        "8.png",
+        "bomb.png",
+        "pristine.png",
+        "pristine-pressed.png"
     };
 
+    /**
+     * Load the images using ImageIO.
+     *
+     * @see ImageIO
+     */
     static void preload() {
         for (String image : imagesNames) {
             try {
                 Image img = ImageIO.read(AssetsLoader.class.getResource("../../assets/" + image));
-                Image scaledImage = img.getScaledInstance(TileButton.TILE_SIZE_PX, TileButton.TILE_SIZE_PX, java.awt.Image.SCALE_SMOOTH);
+                Image scaledImage = img.getScaledInstance(
+                    TileButton.TILE_SIZE_PX,
+                    TileButton.TILE_SIZE_PX,
+                    java.awt.Image.SCALE_SMOOTH
+                );
+
                 images.put(image, new ImageIcon(scaledImage));
             } catch (IOException exception) {
                 System.out.println(exception.getMessage());
