@@ -1,8 +1,8 @@
 package fr.mathieubour.minesweeper.packets;
 
 abstract class CoordinatePacket extends Packet {
-    private int x;
-    private int y;
+    private final int x;
+    private final int y;
 
     CoordinatePacket(int x, int y) {
         this.x = x;

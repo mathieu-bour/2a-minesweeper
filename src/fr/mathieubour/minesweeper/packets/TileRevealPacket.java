@@ -3,11 +3,11 @@ package fr.mathieubour.minesweeper.packets;
 import fr.mathieubour.minesweeper.game.TileStatus;
 
 public class TileRevealPacket extends Packet {
-    private int x;
-    private int y;
-    private TileStatus status;
-    private int bombsAround;
-    private String sweeperId;
+    private final int x;
+    private final int y;
+    private final TileStatus status;
+    private final int bombsAround;
+    private final String sweeperId;
 
     public TileRevealPacket(int x, int y, TileStatus status, int bombsAround, String sweeperId) {
         this.x = x;

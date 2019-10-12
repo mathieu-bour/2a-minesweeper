@@ -8,58 +8,38 @@ import java.util.Random;
  * @version 1.0.0
  */
 public class Field implements Serializable, Cloneable {
-    private int rows;
-    private int columns;
-    private int minesCount;
+    private final Level level;
     private Matrix<Tile> tileMatrix;
 
     /**
-     * Build the field using a predefined difficulty.
+     * Build the field using the default Level.MEDIUM.
+     *
+     * @see Level
+     */
+    public Field() {
+        this(Level.MEDIUM);
+    }
+
+    /**
+     * Build the field using a level configuration.
      *
      * @param level The level.
      */
     public Field(Level level) {
-        switch (level) {
-            case EASY:
-                this.rows = 10;
-                this.columns = 10;
-                this.minesCount = 15;
-                break;
-            case MEDIUM:
-                this.rows = 20;
-                this.columns = 20;
-                this.minesCount = 50;
-                break;
-            case HARD:
-                this.rows = 30;
-                this.columns = 30;
-                this.minesCount = 150;
-                break;
-        }
-
+        this.level = level;
         this.initialize();
     }
 
-    public Field(int rows, int columns, int minesCount) {
-        this.rows = rows;
-        this.columns = columns;
-        this.minesCount = minesCount;
-
-        this.initialize();
+    /**
+     * @return The level.
+     */
+    public Level getLevel() {
+        return level;
     }
 
-    public int getRows() {
-        return rows;
-    }
-
-    public int getColumns() {
-        return columns;
-    }
-
-    public int getMinesCount() {
-        return minesCount;
-    }
-
+    /**
+     * @return The tile matrix.
+     */
     public Matrix<Tile> getTileMatrix() {
         return tileMatrix;
     }
@@ -68,10 +48,10 @@ public class Field implements Serializable, Cloneable {
      * Create the Matrix using the columns/rows parameters.
      */
     private void initialize() {
-        tileMatrix = new Matrix<>(columns, rows, null);
+        tileMatrix = new Matrix<>(level.getColumns(), level.getRows(), null);
 
-        for (int x = 0; x < getColumns(); x++) {
-            for (int y = 0; y < getRows(); y++) {
+        for (int x = 0; x < level.getColumns(); x++) {
+            for (int y = 0; y < level.getRows(); y++) {
                 tileMatrix.set(x, y, new Tile(TileStatus.PRISTINE));
             }
         }
@@ -84,18 +64,18 @@ public class Field implements Serializable, Cloneable {
         int x, y;
         Random rand = new Random(System.currentTimeMillis());
 
-        for (int i = 0; i < minesCount; i++) {
+        for (int i = 0; i < level.getMineCount(); i++) {
             do {
-                x = rand.nextInt(columns - 1);
-                y = rand.nextInt(rows - 1);
+                x = rand.nextInt(level.getColumns() - 1);
+                y = rand.nextInt(level.getRows() - 1);
             } while (tileMatrix.get(x, y).getStatus() == TileStatus.MINED);
 
             tileMatrix.get(x, y).setStatus(TileStatus.MINED);
         }
 
         // Compute the "mines around" values for each tile of the field.
-        for (x = 0; x < getColumns(); x++) {
-            for (y = 0; y < getRows(); y++) {
+        for (x = 0; x < level.getColumns(); x++) {
+            for (y = 0; y < level.getRows(); y++) {
                 Tile tile = tileMatrix.get(x, y);
                 tile.setBombsAround(around(x, y));
 
@@ -122,8 +102,8 @@ public class Field implements Serializable, Cloneable {
                 int yy = y + dy;
 
                 boolean isSelf = dx == 0 && dy == 0;
-                boolean xValid = 0 <= xx && xx < columns;
-                boolean yValid = 0 <= yy && yy < rows;
+                boolean xValid = 0 <= xx && xx < level.getColumns();
+                boolean yValid = 0 <= yy && yy < level.getRows();
 
                 if (!xValid || !yValid || isSelf) {
                     continue;

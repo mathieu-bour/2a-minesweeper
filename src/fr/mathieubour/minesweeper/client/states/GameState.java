@@ -8,7 +8,7 @@ import java.util.HashMap;
 public class GameState {
     private static GameState instance;
     protected HashMap<String, Player> players = new HashMap<>();
-    protected Field field;
+    private Field field;
 
     public static synchronized GameState getInstance() {
         if (instance == null) {

@@ -4,8 +4,8 @@ import java.io.Serializable;
 import java.util.Vector;
 
 public class Matrix<T> implements Serializable, Cloneable {
-    private int sizeX;
-    private int sizeY;
+    private final int sizeX;
+    private final int sizeY;
     private Vector<Vector<T>> internal;
 
     public Matrix(int sizeX, int sizeY, T defaultValue) {

@@ -5,7 +5,7 @@ import fr.mathieubour.minesweeper.packets.PingPacket;
 /**
  * Ping the server every second to compute the current ping.
  */
-public class PingThread extends Thread {
+class PingThread extends Thread {
     @Override
     public void run() {
         while (!interrupted()) {

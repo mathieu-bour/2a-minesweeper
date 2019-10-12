@@ -10,10 +10,10 @@ import java.awt.*;
 
 public class LoginPanel extends JPanel {
     private static LoginPanel instance;
-    private JTextField usernameText = new JTextField("mathieu", 20);
-    private JTextField serverIpText = new JTextField("127.0.0.1:4200", 20);
+    private final JTextField usernameText = new JTextField("mathieu", 20);
+    private final JTextField serverIpText = new JTextField("127.0.0.1:4200", 20);
 
-    public LoginPanel() {
+    private LoginPanel() {
         super(new GridBagLayout());
 
         // Create GridBagConstraints

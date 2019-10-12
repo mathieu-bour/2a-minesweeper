@@ -6,15 +6,15 @@ import fr.mathieubour.minesweeper.game.Player;
 import java.util.HashMap;
 
 public class NewGamePacket extends Packet {
-    private int rows;
-    private int columns;
-    private int minesCount;
-    private HashMap<String, Player> players;
+    private final int rows;
+    private final int columns;
+    private final int mineCount;
+    private final HashMap<String, Player> players;
 
     public NewGamePacket(Field field, HashMap<String, Player> players) {
-        rows = field.getRows();
-        columns = field.getColumns();
-        minesCount = field.getMinesCount();
+        rows = field.getLevel().getRows();
+        columns = field.getLevel().getColumns();
+        mineCount = field.getLevel().getMineCount();
         this.players = players;
     }
 
@@ -26,8 +26,8 @@ public class NewGamePacket extends Packet {
         return columns;
     }
 
-    public int getMinesCount() {
-        return minesCount;
+    public int getMineCount() {
+        return mineCount;
     }
 
     public HashMap<String, Player> getPlayers() {

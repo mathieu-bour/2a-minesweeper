@@ -25,7 +25,7 @@ public class ScoreboardPanel extends JPanel {
         return instance;
     }
 
-    void draw() {
+    private void draw() {
         HashMap<String, Player> players = GameState.getInstance().getPlayers();
 
         GridBagConstraints constraints = new GridBagConstraints();
@@ -38,7 +38,7 @@ public class ScoreboardPanel extends JPanel {
         players.forEach((key, player) -> {
             ScorePanel scorePanel = new ScorePanel(player);
             constraints.gridy = y.getAndIncrement();
-            add(scorePanel, constraints);;
+            add(scorePanel, constraints);
         });
     }
 }

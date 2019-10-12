@@ -9,16 +9,18 @@ import java.util.HashMap;
 /**
  * Load the images (the tiles textures) on start-up.
  */
-class AssetsLoader {
+public class AssetsLoader {
+    private static AssetsLoader instance;
+
     /**
      * The images, indexed by their filename.
      */
-    static HashMap<String, ImageIcon> images = new HashMap<>();
+    private final HashMap<String, ImageIcon> images = new HashMap<>();
 
     /**
      * The images filenames to load.
      */
-    private static String[] imagesNames = {
+    private final String[] imagesNames = {
         "0.png",
         "1.png",
         "2.png",
@@ -30,15 +32,28 @@ class AssetsLoader {
         "8.png",
         "bomb.png",
         "pristine.png",
-        "pristine-pressed.png"
+        "pristine-pressed.png",
+        "loading.gif"
     };
+
+    private AssetsLoader() {
+        preload();
+    }
+
+    public static synchronized AssetsLoader getInstance() {
+        if (instance == null) {
+            instance = new AssetsLoader();
+        }
+
+        return instance;
+    }
 
     /**
      * Load the images using ImageIO.
      *
      * @see ImageIO
      */
-    static void preload() {
+    private void preload() {
         for (String image : imagesNames) {
             try {
                 Image img = ImageIO.read(AssetsLoader.class.getResource("../../assets/" + image));
@@ -53,5 +68,15 @@ class AssetsLoader {
                 System.out.println(exception.getMessage());
             }
         }
+    }
+
+    /**
+     * Get an image by its name.
+     *
+     * @param key The image name
+     * @return The image
+     */
+    public ImageIcon get(String key) {
+        return images.getOrDefault(key, null);
     }
 }

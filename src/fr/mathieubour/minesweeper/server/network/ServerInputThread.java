@@ -17,9 +17,9 @@ public class ServerInputThread extends Thread {
     private ObjectOutputStream output;
     private Player player;
 
-    ServerInputThread(Socket socket, ObjectInputStream input, ObjectOutputStream output) {
-        this.input = input;
-        this.output = output;
+    ServerInputThread(Socket socket) throws IOException {
+        this.output = new ObjectOutputStream(socket.getOutputStream());
+        this.input = new ObjectInputStream(socket.getInputStream());
     }
 
     public void run() {

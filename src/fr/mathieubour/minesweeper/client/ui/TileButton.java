@@ -12,9 +12,9 @@ import java.awt.*;
  * Represent a game tile. A tile is identified by its coordinates and can have multiple statuses.
  */
 public class TileButton extends JButton {
-    public static int TILE_SIZE_PX = 30;
-    public int x;
-    public int y;
+    public static final int TILE_SIZE_PX = 30;
+    public final int x;
+    public final int y;
 
     private Tile tile;
 
@@ -25,7 +25,7 @@ public class TileButton extends JButton {
         // setBorderPainted(false);
         setMargin(new Insets(0, 0, 0, 0));
         // setContentAreaFilled(false);
-        setPressedIcon(AssetsLoader.images.get("pristine-pressed.png"));
+        setPressedIcon(AssetsLoader.getInstance().get("pristine-pressed.png"));
 
         this.x = x;
         this.y = y;
@@ -46,8 +46,8 @@ public class TileButton extends JButton {
     public void redraw() {
         Log.info("Drawing (" + x + "," + y + "): " + tile.getStatus() + ":" + tile.getBombsAround());
 
-        setIcon(AssetsLoader.images.get(getImageName()));
-        setDisabledIcon(AssetsLoader.images.get(getImageName()));
+        setIcon(AssetsLoader.getInstance().get(getImageName()));
+        setDisabledIcon(AssetsLoader.getInstance().get(getImageName()));
 
         if (tile.getSweeper() != null) {
             Player sweeper = tile.getSweeper();

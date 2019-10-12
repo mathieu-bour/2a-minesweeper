@@ -6,9 +6,9 @@ import fr.mathieubour.minesweeper.utils.Log;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 
-public class ClientInputThread extends Thread {
+class ClientInputThread extends Thread {
     private static final boolean ENABLE_PING = false;
-    private ObjectInputStream inputStream;
+    private final ObjectInputStream inputStream;
 
     ClientInputThread(ObjectInputStream inputStream) {
         this.inputStream = inputStream;

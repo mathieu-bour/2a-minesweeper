@@ -2,7 +2,6 @@ package fr.mathieubour.minesweeper.client.panels;
 
 import fr.mathieubour.minesweeper.client.network.ClientSocketHandler;
 import fr.mathieubour.minesweeper.client.states.GameState;
-import fr.mathieubour.minesweeper.client.ui.GameFrame;
 import fr.mathieubour.minesweeper.client.ui.TileButton;
 import fr.mathieubour.minesweeper.game.*;
 import fr.mathieubour.minesweeper.packets.TileRequestPacket;
@@ -48,15 +47,15 @@ public class FieldPanel extends JPanel implements ActionListener {
 //            field.getColumns() * TileButton.TILE_SIZE_PX
 //        );
 
-        tileButtonMatrix = new Matrix<>(field.getRows(), field.getColumns(), null);
+        tileButtonMatrix = new Matrix<>(field.getLevel().getRows(), field.getLevel().getColumns(), null);
 
         GridBagConstraints constraints = new GridBagConstraints();
         constraints.anchor = GridBagConstraints.WEST;
 
-        for (int x = 0; x < field.getRows(); x++) {
+        for (int x = 0; x < field.getLevel().getRows(); x++) {
             constraints.gridx = x;
 
-            for (int y = 0; y < field.getColumns(); y++) {
+            for (int y = 0; y < field.getLevel().getColumns(); y++) {
                 TileButton tileButton = new TileButton(x, y);
                 tileButtonMatrix.set(x, y, tileButton);
 

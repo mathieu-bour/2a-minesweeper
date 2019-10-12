@@ -1,6 +1,7 @@
 package fr.mathieubour.minesweeper.server.network;
 
 import fr.mathieubour.minesweeper.packets.Packet;
+import fr.mathieubour.minesweeper.packets.ServerConfigPacket;
 import fr.mathieubour.minesweeper.server.Server;
 import fr.mathieubour.minesweeper.utils.Log;
 
@@ -13,7 +14,7 @@ import java.util.Vector;
 
 public class ServerSocketHandler {
     private static ServerSocketHandler instance;
-    private Vector<ServerInputThread> clientThreads = new Vector<>();
+    private final Vector<ServerInputThread> clientThreads = new Vector<>();
 
     public static ServerSocketHandler getInstance() {
         if (instance == null) {
@@ -40,12 +41,12 @@ public class ServerSocketHandler {
             try {
                 clientSocket = serverSocket.accept();
                 Log.info("Accepting new connection");
-                ObjectOutputStream output = new ObjectOutputStream(clientSocket.getOutputStream());
-                ObjectInputStream input = new ObjectInputStream(clientSocket.getInputStream());
 
-                clientThread = new ServerInputThread(clientSocket, input, output);
+                clientThread = new ServerInputThread(clientSocket);
                 clientThreads.add(clientThread);
                 clientThread.start();
+
+                clientThread.send(new ServerConfigPacket(Server.MAX_PLAYERS));
 
                 Log.info("There are " + clientThreads.size() + " client threads");
             } catch (IOException e) {

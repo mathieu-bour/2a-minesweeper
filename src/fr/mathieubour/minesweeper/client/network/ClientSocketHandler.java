@@ -1,6 +1,7 @@
 package fr.mathieubour.minesweeper.client.network;
 
 import fr.mathieubour.minesweeper.client.states.PlayerState;
+import fr.mathieubour.minesweeper.client.states.ServerState;
 import fr.mathieubour.minesweeper.packets.Packet;
 import fr.mathieubour.minesweeper.packets.PlayerLoginPacket;
 import fr.mathieubour.minesweeper.utils.Log;
@@ -40,6 +41,9 @@ public class ClientSocketHandler {
      */
     public void connect(String ip, int port) {
         try {
+            ServerState.getInstance().setIp(ip);
+            ServerState.getInstance().setPort(port);
+
             if (socket == null) {
                 socket = new Socket(ip, port);
                 Log.info("Created socket");

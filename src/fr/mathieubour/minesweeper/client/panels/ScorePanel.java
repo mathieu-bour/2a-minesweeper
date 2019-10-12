@@ -5,17 +5,17 @@ import fr.mathieubour.minesweeper.game.Player;
 import javax.swing.*;
 import java.awt.*;
 
-public class ScorePanel extends JPanel {
-    private JLabel colorLabel = new JLabel();
-    private JLabel nameLabel = new JLabel();
-    private JLabel scoreLabel = new JLabel();
+class ScorePanel extends JPanel {
+    private final JLabel colorLabel = new JLabel();
+    private final JLabel nameLabel = new JLabel();
+    private final JLabel scoreLabel = new JLabel();
 
-    ScorePanel() {
+    private ScorePanel() {
         super(new GridBagLayout());
         draw();
     }
 
-    ScorePanel(Color color, String name, int score) {
+    private ScorePanel(Color color, String name, int score) {
         this();
         setColor(color);
         setPlayerName(name);
@@ -26,7 +26,7 @@ public class ScorePanel extends JPanel {
         this(player.getColor(), player.getName(), player.getScore());
     }
 
-    void draw() {
+    private void draw() {
         Dimension dimension = new Dimension(15, 15);
         colorLabel.setMinimumSize(dimension);
         colorLabel.setMaximumSize(dimension);
@@ -47,15 +47,15 @@ public class ScorePanel extends JPanel {
         add(scoreLabel, constraints);
     }
 
-    void setColor(Color color) {
+    private void setColor(Color color) {
         colorLabel.setBackground(color);
     }
 
-    void setPlayerName(String name) {
+    private void setPlayerName(String name) {
         nameLabel.setText(name);
     }
 
-    void setPlayerScore(int score) {
+    private void setPlayerScore(int score) {
         scoreLabel.setText(Integer.toString(score));
     }
 }

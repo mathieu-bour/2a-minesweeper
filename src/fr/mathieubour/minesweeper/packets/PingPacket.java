@@ -1,7 +1,7 @@
 package fr.mathieubour.minesweeper.packets;
 
 public class PingPacket extends Packet {
-    private long currentTimeMillis;
+    private final long currentTimeMillis;
 
     public PingPacket() {
         this.currentTimeMillis = System.currentTimeMillis();

@@ -5,7 +5,7 @@ import java.io.Serializable;
 
 public class Player implements Serializable {
     private String id;
-    private String name;
+    private final String name;
     private Color color;
     private boolean alive = true;
     private int score = 0;

@@ -3,6 +3,7 @@ package fr.mathieubour.minesweeper.server.states;
 import fr.mathieubour.minesweeper.client.states.GameState;
 import fr.mathieubour.minesweeper.game.Field;
 import fr.mathieubour.minesweeper.game.Level;
+import fr.mathieubour.minesweeper.game.LevelDifficulty;
 import fr.mathieubour.minesweeper.game.Player;
 
 import java.util.UUID;

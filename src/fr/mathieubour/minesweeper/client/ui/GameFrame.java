@@ -1,8 +1,12 @@
 package fr.mathieubour.minesweeper.client.ui;
 
-import fr.mathieubour.minesweeper.client.panels.LoginPanel;
+import fr.mathieubour.minesweeper.client.panels.WaitingPanel;
+import fr.mathieubour.minesweeper.client.states.GameState;
+import fr.mathieubour.minesweeper.client.states.PlayerState;
+import fr.mathieubour.minesweeper.game.Player;
 
 import javax.swing.*;
+import java.util.HashMap;
 
 public class GameFrame extends JFrame {
     private static GameFrame instance;
@@ -15,12 +19,29 @@ public class GameFrame extends JFrame {
         GameFrame.instance = this;
 
         // Preload icons
-        AssetsLoader.preload();
         configure();
         setJMenuBar(new GameMenu());
 
-        setContentPane(LoginPanel.getInstance());
+        init();
+        setContentPane(WaitingPanel.getInstance());
         setVisible(true);
+    }
+
+    void init() {
+        HashMap<String, Player> p = new HashMap<>();
+
+        Player p1 = new Player("Player 1");
+        Player p2 = new Player("Player 2");
+        Player p3 = new Player("Player 3");
+        Player p4 = new Player("Player 4");
+
+        p.put("1", p1);
+        p.put("2", p2);
+        p.put("3", p3);
+        p.put("4", p4);
+
+        PlayerState.getInstance().setPlayer(p1);
+        GameState.getInstance().setPlayers(p);
     }
 
     public static synchronized GameFrame getInstance() {
