@@ -1,13 +1,13 @@
 package fr.mathieubour.minesweeper.packets;
 
 abstract class DatePacket extends Packet {
-    private final float timestampMs;
+    private final long timestampMs;
 
-    DatePacket(float timestampMs) {
+    DatePacket(long timestampMs) {
         this.timestampMs = timestampMs;
     }
 
-    public float getTimestampMs() {
+    public long getTimestampMs() {
         return timestampMs;
     }
 }

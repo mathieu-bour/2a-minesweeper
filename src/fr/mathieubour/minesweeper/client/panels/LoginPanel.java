@@ -2,68 +2,21 @@ package fr.mathieubour.minesweeper.client.panels;
 
 import fr.mathieubour.minesweeper.client.network.ClientSocketHandler;
 import fr.mathieubour.minesweeper.client.states.PlayerState;
-import fr.mathieubour.minesweeper.game.Player;
-import fr.mathieubour.minesweeper.utils.Log;
+import fr.mathieubour.minesweeper.client.states.ServerState;
+import fr.mathieubour.minesweeper.client.ui.InsetsUtils;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.IOException;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class LoginPanel extends JPanel {
     private static LoginPanel instance;
-    private final JTextField usernameText = new JTextField("mathieu", 20);
-    private final JTextField serverIpText = new JTextField("127.0.0.1:4200", 20);
+    private final JLabel errorLabel = new JLabel("");
 
     private LoginPanel() {
         super(new GridBagLayout());
-
-        // Create GridBagConstraints
-        GridBagConstraints constraints = new GridBagConstraints();
-        constraints.anchor = GridBagConstraints.WEST;
-        constraints.insets = new Insets(10, 10, 10, 10);
-
-        // Add components to the panel
-        constraints.gridx = 0;
-        constraints.gridy = 0;
-        JLabel usernameLabel = new JLabel("Username: ");
-        add(usernameLabel, constraints);
-
-        constraints.gridx = 1;
-        add(usernameText, constraints);
-
-        constraints.gridx = 0;
-        constraints.gridy = 1;
-        JLabel serverIpLabel = new JLabel("Server IP: ");
-        add(serverIpLabel, constraints);
-
-        constraints.gridx = 1;
-        add(serverIpText, constraints);
-
-        constraints.gridx = 0;
-        constraints.gridy = 2;
-        constraints.gridwidth = 2;
-        constraints.anchor = GridBagConstraints.CENTER;
-        JButton loginButton = new JButton("Login");
-        add(loginButton, constraints);
-
-        loginButton.addActionListener(actionEvent -> {
-            Log.info("lol");
-            String ip = serverIpText.getText();
-            int port = 4200; // Default port
-
-            if (ip.indexOf(':') > -1) {
-                // ip has embedded port (IP:PORT)
-                String[] arr = ip.split(":");
-                ip = arr[0];
-                try {
-                    port = Integer.parseInt(arr[1]);
-                } catch (NumberFormatException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            PlayerState.getInstance().setPlayer(new Player(usernameText.getText()));
-            ClientSocketHandler.getInstance().connect(ip, port);
-        });
+        draw();
     }
 
     public static synchronized LoginPanel getInstance() {
@@ -72,5 +25,55 @@ public class LoginPanel extends JPanel {
         }
 
         return instance;
+    }
+
+    private void draw() {
+        // Create GridBagConstraints
+        AtomicInteger y = new AtomicInteger(0);
+        GridBagConstraints constraints = new GridBagConstraints();
+        constraints.anchor = GridBagConstraints.WEST;
+        constraints.insets = InsetsUtils.MARGIN_BOTTOM_1;
+        constraints.gridx = 0;
+        constraints.gridy = y.getAndIncrement();
+        JLabel usernameLabel = new JLabel("Username: ");
+        add(usernameLabel, constraints);
+
+        constraints.gridy = y.getAndIncrement();
+        constraints.insets = InsetsUtils.MARGIN_BOTTOM_2;
+        JTextField usernameText = new JTextField("mathieu", 20);
+        add(usernameText, constraints);
+
+        constraints.gridy = y.getAndIncrement();
+        constraints.insets = InsetsUtils.MARGIN_BOTTOM_1;
+        JLabel serverIpLabel = new JLabel("Server IP: ");
+        add(serverIpLabel, constraints);
+
+        constraints.gridy = y.getAndIncrement();
+        JTextField serverIpText = new JTextField("127.0.0.1:4200", 20);
+        add(serverIpText, constraints);
+
+        constraints.gridy = y.getAndIncrement();
+        constraints.insets = InsetsUtils.MARGIN_BOTTOM_2;
+        errorLabel.setForeground(Color.RED);
+        add(errorLabel, constraints);
+
+        constraints.gridy = y.getAndIncrement();
+        constraints.insets = InsetsUtils.MARGIN_BOTTOM_2;
+        JButton loginButton = new JButton("Login");
+        add(loginButton, constraints);
+
+        loginButton.addActionListener(actionEvent -> {
+            errorLabel.setText("");
+
+            PlayerState.getInstance().getPlayer().setName(usernameText.getText());
+
+            if (!ServerState.getInstance().isConnected()) {
+                try {
+                    ClientSocketHandler.getInstance().connect(serverIpText.getText());
+                } catch (IOException exception) {
+                    errorLabel.setText(exception.getMessage());
+                }
+            }
+        });
     }
 }

@@ -1,13 +1,10 @@
 package fr.mathieubour.minesweeper.server.network;
 
 import fr.mathieubour.minesweeper.packets.Packet;
-import fr.mathieubour.minesweeper.packets.ServerConfigPacket;
 import fr.mathieubour.minesweeper.server.Server;
 import fr.mathieubour.minesweeper.utils.Log;
 
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Vector;
@@ -22,6 +19,10 @@ public class ServerSocketHandler {
         }
 
         return instance;
+    }
+
+    public Vector<ServerInputThread> getClientThreads() {
+        return clientThreads;
     }
 
     /**
@@ -46,21 +47,16 @@ public class ServerSocketHandler {
                 clientThreads.add(clientThread);
                 clientThread.start();
 
-                clientThread.send(new ServerConfigPacket(Server.MAX_PLAYERS));
-
                 Log.info("There are " + clientThreads.size() + " client threads");
             } catch (IOException e) {
-                // TODO: Implement disconnection mecanism.
-
                 if (clientSocket != null) {
                     clientSocket.close();
                 }
 
                 if (clientThread != null) {
                     clientThread.interrupt();
+                    clientThreads.remove(clientThread);
                 }
-
-                e.printStackTrace();
             }
         }
     }
@@ -70,7 +66,7 @@ public class ServerSocketHandler {
      *
      * @param packet The packet to broadcast
      */
-    public void broadcast(Packet packet) {
+    public synchronized void broadcast(Packet packet) {
         Log.packet("Broadcasting to " + clientThreads.size() + " clients", packet);
         clientThreads.forEach(serverInputThread -> serverInputThread.send(packet));
         Log.packet("Broadcasted", packet);

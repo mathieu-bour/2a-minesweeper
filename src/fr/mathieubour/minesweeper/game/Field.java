@@ -119,4 +119,23 @@ public class Field implements Serializable, Cloneable {
 
         return count;
     }
+
+    /**
+     * Check that the field still got a least 1 pristine tile.
+     *
+     * @return if the field is considered at finished.
+     */
+    public boolean isFinished() {
+        for (int x = 0; x < level.getColumns(); x++) {
+            for (int y = 0; y < level.getRows(); y++) {
+                Tile tile = tileMatrix.get(x, y);
+
+                if (tile.getStatus() == TileStatus.PRISTINE) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
 }

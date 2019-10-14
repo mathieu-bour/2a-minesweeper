@@ -4,7 +4,7 @@ import fr.mathieubour.minesweeper.game.Player;
 
 public class PlayerState {
     private static PlayerState instance;
-    private Player player;
+    private Player player = new Player("default");
 
     public static synchronized PlayerState getInstance() {
         if (instance == null) {
@@ -18,6 +18,6 @@ public class PlayerState {
     }
 
     public void setPlayer(Player player) {
-        this.player = player;
+        this.player.setFrom(player);
     }
 }

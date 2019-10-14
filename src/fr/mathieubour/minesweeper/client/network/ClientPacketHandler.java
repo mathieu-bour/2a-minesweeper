@@ -1,14 +1,10 @@
 package fr.mathieubour.minesweeper.client.network;
 
+import fr.mathieubour.minesweeper.client.handlers.*;
 import fr.mathieubour.minesweeper.client.panels.FieldPanel;
-import fr.mathieubour.minesweeper.client.panels.GamePanel;
-import fr.mathieubour.minesweeper.client.states.GameState;
-import fr.mathieubour.minesweeper.client.states.PlayerState;
+import fr.mathieubour.minesweeper.client.states.ClientGameState;
 import fr.mathieubour.minesweeper.client.states.ServerState;
-import fr.mathieubour.minesweeper.client.ui.GameFrame;
 import fr.mathieubour.minesweeper.client.ui.TileButton;
-import fr.mathieubour.minesweeper.game.Field;
-import fr.mathieubour.minesweeper.game.Level;
 import fr.mathieubour.minesweeper.game.Player;
 import fr.mathieubour.minesweeper.game.Tile;
 import fr.mathieubour.minesweeper.packets.*;
@@ -39,36 +35,21 @@ public class ClientPacketHandler {
             float ping = System.currentTimeMillis() - pingPacket.getCurrentTimeMillis();
             ServerState.getInstance().setPing(ping);
             Log.info("Current ping " + ping + "ms");
-        } else if (abstractPacket instanceof ServerConfigPacket) {
-            // Received server config
-            ServerConfigPacket packet = (ServerConfigPacket) abstractPacket;
-            ServerState.getInstance().setMaxPlayers(packet.getMaxPlayers());
         } else if (abstractPacket instanceof PlayerLoggedPacket) {
-            // Received player profile
-            PlayerLoggedPacket playerLoggedPacket = (PlayerLoggedPacket) abstractPacket;
-            PlayerState.getInstance().setPlayer(playerLoggedPacket.getPlayer());
-        } else if (abstractPacket instanceof NewGamePacket) {
-            // New game started
-            NewGamePacket newGamePacket = (NewGamePacket) abstractPacket;
-            GameState gameState = GameState.getInstance();
-            Level level = new Level(
-                newGamePacket.getRows(),
-                newGamePacket.getColumns(),
-                newGamePacket.getMineCount()
-            );
-            gameState.setField(new Field(level));
-            gameState.setPlayers(newGamePacket.getPlayers());
-
-            // Swap the panel
-            GameFrame.getInstance().setContentPane(GamePanel.getInstance());
-            GameFrame.getInstance().revalidate();
+            PlayerLoggedPacketHandler.getInstance().handle((PlayerLoggedPacket) abstractPacket);
+        } else if (abstractPacket instanceof PlayerListPacket) {
+            PlayerListPacketHandler.getInstance().handle((PlayerListPacket) abstractPacket);
+        } else if (abstractPacket instanceof GameStartDatePacket) {
+            GameStartDatePacketHandler.getInstance().handle((GameStartDatePacket) abstractPacket);
+        } else if (abstractPacket instanceof GameStartPacket) {
+            GameStartPacketHandler.getInstance().handle((GameStartPacket) abstractPacket);
         } else if (abstractPacket instanceof TileRevealPacket) {
             TileRevealPacket tileRevealPacket = (TileRevealPacket) abstractPacket;
-            Tile tile = GameState.getInstance()
+            Tile tile = ClientGameState.getInstance()
                 .getField()
                 .getTileMatrix()
                 .get(tileRevealPacket.getX(), tileRevealPacket.getY());
-            Player sweeper = GameState.getInstance().getPlayers().get(tileRevealPacket.getSweeperId());
+            Player sweeper = ClientGameState.getInstance().getPlayers().get(tileRevealPacket.getSweeperId());
             TileButton tileButton = FieldPanel.getInstance()
                 .getTileButtonMatrix()
                 .get(tileRevealPacket.getX(), tileRevealPacket.getY());
@@ -79,14 +60,15 @@ public class ClientPacketHandler {
             tileButton.setTile(tile);
             tileButton.redraw();
         } else if (abstractPacket instanceof PlayerScorePacket) {
-            PlayerScorePacket playerScorePacket = (PlayerScorePacket) abstractPacket;
-            Player packetPlayer = playerScorePacket.getPlayer();
-            Player player = GameState.getInstance().getPlayers().get(packetPlayer.getId());
-            player.setScore(packetPlayer.getScore());
+            PlayerScorePacketHandler.getInstance().handle((PlayerScorePacket) abstractPacket);
+        } else if (abstractPacket instanceof PlayerDeadPacket) {
+            PlayerDeadPacketHandler.getInstance().handle((PlayerDeadPacket) abstractPacket);
+        } else if (abstractPacket instanceof PlayerMessagePacket) {
+            PlayerMessagePacketHandler.getInstance().handle((PlayerMessagePacket) abstractPacket);
         } else {
             Log.packet("Unhandled", abstractPacket);
         }
 
-        Log.packet("Handling", abstractPacket);
+        Log.packet("Handled", abstractPacket);
     }
 }

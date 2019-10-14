@@ -1,25 +1,24 @@
 package fr.mathieubour.minesweeper.client.panels;
 
+import fr.mathieubour.minesweeper.client.Client;
 import fr.mathieubour.minesweeper.client.network.ClientSocketHandler;
-import fr.mathieubour.minesweeper.client.states.GameState;
+import fr.mathieubour.minesweeper.client.states.ClientGameState;
+import fr.mathieubour.minesweeper.client.states.PlayerState;
 import fr.mathieubour.minesweeper.client.ui.TileButton;
 import fr.mathieubour.minesweeper.game.*;
 import fr.mathieubour.minesweeper.packets.TileRequestPacket;
-import fr.mathieubour.minesweeper.utils.Log;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
-public class FieldPanel extends JPanel implements ActionListener {
+public class FieldPanel extends JPanel {
     private static FieldPanel instance;
-    private Field field;
     private Matrix<TileButton> tileButtonMatrix;
 
     private FieldPanel() {
         super(new GridBagLayout());
-        drawGrid();
+        redraw();
     }
 
     public static FieldPanel getInstance() {
@@ -34,18 +33,13 @@ public class FieldPanel extends JPanel implements ActionListener {
         return tileButtonMatrix;
     }
 
-    private void drawGrid() {
-        Log.info("Drawing grid");
-        field = GameState.getInstance().getField();
+    public void redraw() {
+        removeAll();
+        Field field = ClientGameState.getInstance().getField();
 
         if (field == null) {
             field = new Field(Level.MEDIUM);
         }
-
-//        GameFrame.getInstance().setSize(
-//            field.getRows() * TileButton.TILE_SIZE_PX,
-//            field.getColumns() * TileButton.TILE_SIZE_PX
-//        );
 
         tileButtonMatrix = new Matrix<>(field.getLevel().getRows(), field.getLevel().getColumns(), null);
 
@@ -65,22 +59,22 @@ public class FieldPanel extends JPanel implements ActionListener {
                 constraints.gridy = y;
                 add(tileButton, constraints);
 
-                tileButton.addActionListener(this);
+                tileButton.addActionListener(this::onTileClick);
             }
         }
+
+        Client.getInstance().setSize(
+            field.getLevel().getRows() * TileButton.TILE_SIZE_PX + ScorePanel.WIDTH,
+            field.getLevel().getColumns() * TileButton.TILE_SIZE_PX + 150
+        );
     }
 
-    @Override
-    public void actionPerformed(ActionEvent actionEvent) {
-        Object source = actionEvent.getSource();
-        Log.info(source.getClass().getName());
-        if (!(source instanceof TileButton)) {
-            return;
-        }
-
+    private void onTileClick(ActionEvent actionEvent) {
         TileButton tileButton = (TileButton) actionEvent.getSource();
+        boolean pristine = tileButton.getTile().getStatus() == TileStatus.PRISTINE;
+        boolean alive = PlayerState.getInstance().getPlayer().isAlive();
 
-        if (tileButton.getTile().getStatus() == TileStatus.PRISTINE) {
+        if (pristine && alive) {
             ClientSocketHandler.getInstance().send(
                 new TileRequestPacket(tileButton.x, tileButton.y)
             );

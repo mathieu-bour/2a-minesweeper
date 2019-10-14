@@ -1,12 +1,20 @@
 package fr.mathieubour.minesweeper.server.handlers;
 
-import fr.mathieubour.minesweeper.packets.NewGamePacket;
-import fr.mathieubour.minesweeper.packets.PlayerLoginPacket;
+import fr.mathieubour.minesweeper.game.Level;
+import fr.mathieubour.minesweeper.game.LevelDifficulty;
+import fr.mathieubour.minesweeper.game.Player;
+import fr.mathieubour.minesweeper.packets.*;
 import fr.mathieubour.minesweeper.server.Server;
 import fr.mathieubour.minesweeper.server.network.ServerInputThread;
 import fr.mathieubour.minesweeper.server.network.ServerSocketHandler;
+import fr.mathieubour.minesweeper.server.routines.ScheduleGame;
 import fr.mathieubour.minesweeper.server.states.ServerGameState;
 import fr.mathieubour.minesweeper.utils.Log;
+
+import java.util.HashMap;
+import java.util.Random;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class PlayerLoginPacketHandler {
     private static PlayerLoginPacketHandler instance;
@@ -19,11 +27,11 @@ public class PlayerLoginPacketHandler {
         return instance;
     }
 
-    public void handle(PlayerLoginPacket packet, ServerInputThread sourceThread) {
+    public synchronized void handle(PlayerLoginPacket packet, ServerInputThread sourceThread) {
         // User attempt to join the game
         ServerGameState serverGameState = ServerGameState.getInstance();
 
-        if (serverGameState.getPlayers().size() == Server.MAX_PLAYERS) {
+        if (serverGameState.getPlayers().size() >= Server.MAX_PLAYERS) {
             // TODO: refuse the connection
         }
 
@@ -32,14 +40,11 @@ public class PlayerLoginPacketHandler {
 
         Log.info(serverGameState.getPlayers().size() + " players are connected");
 
-        if (serverGameState.getPlayers().size() == Server.MAX_PLAYERS) {
-            // Start the game
-            // serverGameState.setField(new Field(Level.MEDIUM));
+        PlayerListPacket p = new PlayerListPacket(serverGameState.getPlayers());
+        ServerSocketHandler.getInstance().broadcast(p);
 
-            ServerSocketHandler.getInstance().broadcast(new NewGamePacket(
-                serverGameState.getField(),
-                serverGameState.getPlayers()
-            ));
+        if (serverGameState.getPlayers().size() >= Server.MIN_PLAYERS) {
+            ScheduleGame.getInstance().schedule();
         }
     }
 }

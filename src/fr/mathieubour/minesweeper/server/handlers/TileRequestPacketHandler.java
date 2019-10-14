@@ -4,12 +4,11 @@ import fr.mathieubour.minesweeper.game.Field;
 import fr.mathieubour.minesweeper.game.Player;
 import fr.mathieubour.minesweeper.game.Tile;
 import fr.mathieubour.minesweeper.game.TileStatus;
-import fr.mathieubour.minesweeper.packets.PlayerDeadPacket;
-import fr.mathieubour.minesweeper.packets.PlayerScorePacket;
-import fr.mathieubour.minesweeper.packets.TileRequestPacket;
-import fr.mathieubour.minesweeper.packets.TileRevealPacket;
+import fr.mathieubour.minesweeper.packets.*;
+import fr.mathieubour.minesweeper.server.Server;
 import fr.mathieubour.minesweeper.server.network.ServerInputThread;
 import fr.mathieubour.minesweeper.server.network.ServerSocketHandler;
+import fr.mathieubour.minesweeper.server.routines.ScheduleGame;
 import fr.mathieubour.minesweeper.server.states.ServerGameState;
 import fr.mathieubour.minesweeper.utils.Log;
 
@@ -70,9 +69,13 @@ public class TileRequestPacketHandler {
             player.setAlive(false);
             serverSocketHandler.broadcast(new PlayerDeadPacket(player));
         } else {
-            // There was a mine, player is dead
+            // There was no mine, player is score is incremented
             player.setScore(player.getScore() + 1);
             serverSocketHandler.broadcast(new PlayerScorePacket(player));
+        }
+
+        if (serverGameState.isGameFinished()) {
+            ScheduleGame.getInstance().schedule();
         }
     }
 }

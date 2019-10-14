@@ -1,5 +1,6 @@
 package fr.mathieubour.minesweeper.client.network;
 
+import fr.mathieubour.minesweeper.client.states.ServerState;
 import fr.mathieubour.minesweeper.packets.Packet;
 import fr.mathieubour.minesweeper.utils.Log;
 
@@ -24,11 +25,13 @@ class ClientInputThread extends Thread {
         }
 
         while (!interrupted()) {
+            ServerState.getInstance().setConnected(true);
             try {
                 Packet packet = (Packet) this.inputStream.readObject();
                 ClientPacketHandler.getInstance().handle(packet);
             } catch (IOException | ClassNotFoundException e) {
                 // Server disconnected
+                ServerState.getInstance().setConnected(false);
                 e.printStackTrace();
                 interrupt();
             }

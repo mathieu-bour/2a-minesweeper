@@ -2,6 +2,7 @@ package fr.mathieubour.minesweeper.client.states;
 
 public class ServerState {
     private static ServerState instance;
+    private boolean connected = false;
     private String ip;
     private int port;
     private float ping;
@@ -12,6 +13,14 @@ public class ServerState {
             instance = new ServerState();
         }
         return instance;
+    }
+
+    public boolean isConnected() {
+        return connected;
+    }
+
+    public void setConnected(boolean connected) {
+        this.connected = connected;
     }
 
     public float getPing() {

@@ -6,6 +6,7 @@ import java.util.Vector;
 public class Matrix<T> implements Serializable, Cloneable {
     private final int sizeX;
     private final int sizeY;
+
     private Vector<Vector<T>> internal;
 
     public Matrix(int sizeX, int sizeY, T defaultValue) {
@@ -44,9 +45,7 @@ public class Matrix<T> implements Serializable, Cloneable {
         return str.toString();
     }
 
-    public Matrix<T> clone() throws CloneNotSupportedException {
-        Matrix<T> matrix = (Matrix<T>) super.clone();
-        matrix.internal = (Vector<Vector<T>>) this.internal.clone();
-        return matrix;
+    public Vector<Vector<T>> getInternal() {
+        return internal;
     }
 }

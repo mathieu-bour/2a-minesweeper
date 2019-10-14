@@ -35,38 +35,47 @@ public class ClientSocketHandler {
      * Create the socket and the object in/out streams.
      * ObjectOutputStream must be instantiated <b>before</b> the ObjectInputStream otherwise it cause a deadlock.
      *
-     * @param ip   The server IP address.
-     * @param port The server port.
+     * @param ip The server IP address.
      * @link https://stackoverflow.com/a/21864408
      */
-    public void connect(String ip, int port) {
-        try {
-            ServerState.getInstance().setIp(ip);
-            ServerState.getInstance().setPort(port);
+    public void connect(String ip) throws IOException {
+        // Parse IP:PORT
+        int port = 4200;
 
-            if (socket == null) {
-                socket = new Socket(ip, port);
-                Log.info("Created socket");
+        if (ip.indexOf(':') > -1) {
+            // ip has embedded port (IP:PORT)
+            String[] arr = ip.split(":");
+            ip = arr[0];
+            try {
+                port = Integer.parseInt(arr[1]);
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
             }
+        }
 
-            if (outputStream == null) {
-                outputStream = new ObjectOutputStream(socket.getOutputStream());
-                Log.info("Created out stream");
-            }
+        ServerState.getInstance().setIp(ip);
+        ServerState.getInstance().setPort(port);
 
-            if (inputStream == null) {
-                inputStream = new ObjectInputStream(socket.getInputStream());
-                Log.info("Created in stream");
-            }
+        if (socket == null) {
+            socket = new Socket(ip, port);
+            Log.info("Created socket");
+        }
 
-            if (clientInputThread == null) {
-                clientInputThread = new ClientInputThread(inputStream);
-                Log.info("Created input thread");
-                clientInputThread.start();
-                Log.info("Started input thread");
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
+        if (outputStream == null) {
+            outputStream = new ObjectOutputStream(socket.getOutputStream());
+            Log.info("Created out stream");
+        }
+
+        if (inputStream == null) {
+            inputStream = new ObjectInputStream(socket.getInputStream());
+            Log.info("Created in stream");
+        }
+
+        if (clientInputThread == null) {
+            clientInputThread = new ClientInputThread(inputStream);
+            Log.info("Created input thread");
+            clientInputThread.start();
+            Log.info("Started input thread");
         }
 
         send(new PlayerLoginPacket(PlayerState.getInstance().getPlayer()));

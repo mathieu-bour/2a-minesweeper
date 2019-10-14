@@ -1,6 +1,6 @@
 package fr.mathieubour.minesweeper.client.panels;
 
-import fr.mathieubour.minesweeper.client.states.GameState;
+import fr.mathieubour.minesweeper.client.states.ClientGameState;
 import fr.mathieubour.minesweeper.game.Player;
 
 import javax.swing.*;
@@ -10,11 +10,11 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class ScoreboardPanel extends JPanel {
     private static ScoreboardPanel instance;
-    HashMap<String, ScorePanel> scorePanels = new HashMap<>();
+    private HashMap<String, ScorePanel> scorePanels = new HashMap<>();
 
     private ScoreboardPanel() {
         super(new GridBagLayout());
-        draw();
+        redraw();
     }
 
     public static synchronized ScoreboardPanel getInstance() {
@@ -25,8 +25,13 @@ public class ScoreboardPanel extends JPanel {
         return instance;
     }
 
-    private void draw() {
-        HashMap<String, Player> players = GameState.getInstance().getPlayers();
+    public HashMap<String, ScorePanel> getScorePanels() {
+        return scorePanels;
+    }
+
+    public void redraw() {
+        removeAll();
+        HashMap<String, Player> players = ClientGameState.getInstance().getPlayers();
 
         GridBagConstraints constraints = new GridBagConstraints();
         constraints.anchor = GridBagConstraints.WEST;
@@ -39,6 +44,7 @@ public class ScoreboardPanel extends JPanel {
             ScorePanel scorePanel = new ScorePanel(player);
             constraints.gridy = y.getAndIncrement();
             add(scorePanel, constraints);
+            scorePanels.put(player.getId(), scorePanel);
         });
     }
 }
