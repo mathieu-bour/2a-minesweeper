@@ -63,6 +63,8 @@ public class ClientPacketHandler {
             PlayerScorePacketHandler.getInstance().handle((PlayerScorePacket) abstractPacket);
         } else if (abstractPacket instanceof PlayerDeadPacket) {
             PlayerDeadPacketHandler.getInstance().handle((PlayerDeadPacket) abstractPacket);
+        } else if (abstractPacket instanceof PlayerColorPacket) {
+            PlayerColorPacketHandler.getInstance().handle((PlayerColorPacket) abstractPacket);
         } else if (abstractPacket instanceof PlayerMessagePacket) {
             PlayerMessagePacketHandler.getInstance().handle((PlayerMessagePacket) abstractPacket);
         } else {

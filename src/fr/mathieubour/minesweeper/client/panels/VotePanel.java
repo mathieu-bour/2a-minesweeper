@@ -5,18 +5,25 @@ import fr.mathieubour.minesweeper.client.states.PlayerState;
 import fr.mathieubour.minesweeper.client.ui.AssetsLoader;
 import fr.mathieubour.minesweeper.game.LevelDifficulty;
 import fr.mathieubour.minesweeper.game.Player;
-import fr.mathieubour.minesweeper.game.Vote;
+import fr.mathieubour.minesweeper.packets.PlayerColorPacket;
 import fr.mathieubour.minesweeper.packets.PlayerVotePacket;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.HashMap;
+import java.awt.event.ActionEvent;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
+/**
+ * Display the user profile and allow him to:
+ * 1. Change his color;
+ * 2. vote for the next game difficulty.
+ */
 class VotePanel extends JPanel {
+    /**
+     * The player associated with the vote panel.
+     */
     private Player player;
-    private Vote vote;
-
     /**
      * Holds the player name.
      */
@@ -35,7 +42,7 @@ class VotePanel extends JPanel {
      * Hold the player score.
      */
     private JLabel scoreLabel = new JLabel();
-    private HashMap<LevelDifficulty, JButton> voteButtons = new HashMap<>();
+    private ConcurrentHashMap<LevelDifficulty, JButton> voteButtons = new ConcurrentHashMap<>();
 
     VotePanel(Player player) {
         super(new GridBagLayout());
@@ -43,6 +50,9 @@ class VotePanel extends JPanel {
         redraw();
     }
 
+    /**
+     * Redraw the vote panel.
+     */
     private void redraw() {
         AtomicInteger y = new AtomicInteger(0);
         GridBagConstraints constraints = new GridBagConstraints();
@@ -65,37 +75,16 @@ class VotePanel extends JPanel {
             colorSelectorButton.setRolloverEnabled(false);
             colorSelectorButton.setBackground(player.getColor());
             colorSelectorButton.setForeground(player.getColor());
+            colorSelectorButton.setIcon(getIcon());
 
-            if (!player.isAlive()) {
-                colorSelectorButton.setIcon(AssetsLoader.getInstance().get("bomb.png"));
-            } else {
-                colorSelectorButton.setIcon(AssetsLoader.getInstance().get("0.png"));
-            }
-
-            colorSelectorButton.addActionListener(actionEvent -> {
-                Color newColor = JColorChooser.showDialog(this, "Choose a new color", player.getColor());
-
-                if (newColor == null) {
-                    return;
-                }
-
-                player.setColor(newColor);
-                colorSelectorButton.setBackground(player.getColor());
-                colorSelectorButton.setForeground(player.getColor());
-
-                // Send packet
-            });
+            colorSelectorButton.addActionListener(this::openColorChooser);
             add(colorSelectorButton, constraints);
         } else {
+            // Draw the JLabel
             colorLabel.setPreferredSize(colorDimension);
             colorLabel.setOpaque(true);
             colorLabel.setBackground(player.getColor());
-
-            if (!player.isAlive()) {
-                colorLabel.setIcon(AssetsLoader.getInstance().get("bomb.png"));
-            } else {
-                colorLabel.setIcon(AssetsLoader.getInstance().get("0.png"));
-            }
+            colorLabel.setIcon(getIcon());
 
             add(colorLabel, constraints);
         }
@@ -128,12 +117,54 @@ class VotePanel extends JPanel {
         }
     }
 
+    /**
+     * Get the icon to display on the user color (a mine or a transparent tile).
+     *
+     * @return The ImageIcon object.
+     * @see AssetsLoader
+     */
+    private ImageIcon getIcon() {
+        if (!player.isAlive()) {
+            return AssetsLoader.getInstance().get("bomb.png");
+        } else {
+            return AssetsLoader.getInstance().get("0.png");
+        }
+    }
+
+    /**
+     * Handle click on the color chooser and send the new color to the server if necessary.
+     *
+     * @param actionEvent The event.
+     */
+    private void openColorChooser(ActionEvent actionEvent) {
+        Color newColor = JColorChooser.showDialog(this, "Choose a new color", player.getColor());
+
+        if (newColor == null) {
+            return;
+        }
+
+        player.setColor(newColor);
+        colorSelectorButton.setBackground(player.getColor());
+        colorSelectorButton.setForeground(player.getColor());
+        ClientSocketHandler.getInstance().send(new PlayerColorPacket(player));
+    }
+
+    /**
+     * @return if the panel user is the current user.
+     */
     private boolean isCurrentPlayer() {
         String playerId = player.getId();
         String currentId = PlayerState.getInstance().getPlayer().getId();
         return playerId.equals(currentId);
     }
 
+    /**
+     * Translate the difficulty name to an human-readable string.
+     *
+     * @param levelDifficulty The level difficulty.
+     * @return The level difficulty name.
+     * @see LevelDifficulty
+     */
     private String getName(LevelDifficulty levelDifficulty) {
         switch (levelDifficulty) {
             case EASY:
@@ -147,6 +178,11 @@ class VotePanel extends JPanel {
         }
     }
 
+    /**
+     * Set the current user difficulty, and send it to the server.
+     *
+     * @param difficulty The level difficulty.
+     */
     private void setCurrentDifficulty(LevelDifficulty difficulty) {
         voteButtons.forEach((difficulty2, button) -> {
             if (difficulty != difficulty2) {

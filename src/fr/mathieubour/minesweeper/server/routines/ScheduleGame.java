@@ -9,10 +9,10 @@ import fr.mathieubour.minesweeper.server.Server;
 import fr.mathieubour.minesweeper.server.network.ServerSocketHandler;
 import fr.mathieubour.minesweeper.server.states.ServerGameState;
 
-import java.util.HashMap;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class ScheduleGame {
     private static ScheduleGame instance;
@@ -51,7 +51,7 @@ public class ScheduleGame {
                 // Choose the difficulty based on votes
                 ServerGameState serverGameState = ServerGameState.getInstance();
 
-                HashMap<String, Player> voters = new HashMap<>();
+                ConcurrentHashMap<String, Player> voters = new ConcurrentHashMap<>();
                 serverGameState.getPlayers().forEach((uuid, player) -> {
                     if (player.getVote() != null) {
                         voters.put(uuid, player);

@@ -4,13 +4,13 @@ import fr.mathieubour.minesweeper.client.states.ClientGameState;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class VotesPanel extends JPanel {
     private static VotesPanel instance;
 
-    private HashMap<String, VotePanel> votePanels = new HashMap<>();
+    private ConcurrentHashMap<String, VotePanel> votePanels = new ConcurrentHashMap<>();
 
     private VotesPanel() {
         super(new GridBagLayout());

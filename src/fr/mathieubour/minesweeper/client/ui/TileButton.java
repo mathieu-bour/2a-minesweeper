@@ -3,7 +3,6 @@ package fr.mathieubour.minesweeper.client.ui;
 import fr.mathieubour.minesweeper.game.Player;
 import fr.mathieubour.minesweeper.game.Tile;
 import fr.mathieubour.minesweeper.game.TileStatus;
-import fr.mathieubour.minesweeper.utils.Log;
 
 import javax.swing.*;
 import java.awt.*;
@@ -32,7 +31,7 @@ public class TileButton extends JButton {
 
         setPressedIcon(AssetsLoader.getInstance().get("pristine-pressed.png"));
 
-        setBorder(BorderFactory.createEmptyBorder(0,0,0,0));
+        setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
         setMargin(new Insets(0, 0, 0, 0));
 
         setTile(new Tile());

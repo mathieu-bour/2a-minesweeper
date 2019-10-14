@@ -1,11 +1,11 @@
 package fr.mathieubour.minesweeper.client.handlers;
 
+import fr.mathieubour.minesweeper.client.Client;
 import fr.mathieubour.minesweeper.client.panels.ScoreboardPanel;
-import fr.mathieubour.minesweeper.client.states.ClientState;
-import fr.mathieubour.minesweeper.client.views.WaitingView;
 import fr.mathieubour.minesweeper.client.panels.VotesPanel;
 import fr.mathieubour.minesweeper.client.states.ClientGameState;
-import fr.mathieubour.minesweeper.client.Client;
+import fr.mathieubour.minesweeper.client.states.ClientState;
+import fr.mathieubour.minesweeper.client.views.WaitingView;
 import fr.mathieubour.minesweeper.packets.PlayerListPacket;
 
 public class PlayerListPacketHandler {

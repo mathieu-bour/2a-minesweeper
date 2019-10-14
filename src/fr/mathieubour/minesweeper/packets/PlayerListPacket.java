@@ -2,12 +2,12 @@ package fr.mathieubour.minesweeper.packets;
 
 import fr.mathieubour.minesweeper.game.Player;
 
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class PlayerListPacket extends Packet {
-    private final HashMap<String, Player> players = new HashMap<>();
+    private final ConcurrentHashMap<String, Player> players = new ConcurrentHashMap<>();
 
-    public PlayerListPacket(HashMap<String, Player> players) {
+    public PlayerListPacket(ConcurrentHashMap<String, Player> players) {
         players.forEach((uuid, player) -> {
             try {
                 this.players.put(uuid, player.clone());
@@ -17,7 +17,7 @@ public class PlayerListPacket extends Packet {
         });
     }
 
-    public HashMap<String, Player> getPlayers() {
+    public ConcurrentHashMap<String, Player> getPlayers() {
         return players;
     }
 }

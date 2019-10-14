@@ -3,7 +3,6 @@ package fr.mathieubour.minesweeper.server.states;
 import fr.mathieubour.minesweeper.client.states.ClientGameState;
 import fr.mathieubour.minesweeper.game.Field;
 import fr.mathieubour.minesweeper.game.Level;
-import fr.mathieubour.minesweeper.utils.Log;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 

@@ -6,7 +6,13 @@ import fr.mathieubour.minesweeper.client.panels.OfflinePanel;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * Display the home view with the single player and server login forms.
+ */
 public class HomeView extends JPanel {
+    /**
+     * The singleton.
+     */
     private static HomeView instance;
 
     private HomeView() {

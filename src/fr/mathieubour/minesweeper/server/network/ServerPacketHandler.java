@@ -1,8 +1,8 @@
 package fr.mathieubour.minesweeper.server.network;
 
 import fr.mathieubour.minesweeper.packets.*;
+import fr.mathieubour.minesweeper.server.handlers.BroadcastPacketHandler;
 import fr.mathieubour.minesweeper.server.handlers.PlayerLoginPacketHandler;
-import fr.mathieubour.minesweeper.server.handlers.PlayerMessagePacketHandler;
 import fr.mathieubour.minesweeper.server.handlers.PlayerVotePacketHandler;
 import fr.mathieubour.minesweeper.server.handlers.TileRequestPacketHandler;
 import fr.mathieubour.minesweeper.utils.Log;
@@ -29,7 +29,9 @@ public class ServerPacketHandler {
         } else if (packet instanceof PlayerLoginPacket) {
             PlayerLoginPacketHandler.getInstance().handle((PlayerLoginPacket) packet, sourceThread);
         } else if (packet instanceof PlayerMessagePacket) {
-            PlayerMessagePacketHandler.getInstance().handle((PlayerMessagePacket) packet);
+            BroadcastPacketHandler.getInstance().handle(packet);
+        } else if (packet instanceof PlayerColorPacket) {
+            BroadcastPacketHandler.getInstance().handle(packet);
         } else if (packet instanceof TileRequestPacket) {
             TileRequestPacketHandler.getInstance().handle((TileRequestPacket) packet, sourceThread);
         } else if (packet instanceof PlayerVotePacket) {

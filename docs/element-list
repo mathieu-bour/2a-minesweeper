@@ -1,0 +1,15 @@
+fr.mathieubour.minesweeper.client
+fr.mathieubour.minesweeper.client.handlers
+fr.mathieubour.minesweeper.client.network
+fr.mathieubour.minesweeper.client.panels
+fr.mathieubour.minesweeper.client.states
+fr.mathieubour.minesweeper.client.ui
+fr.mathieubour.minesweeper.client.views
+fr.mathieubour.minesweeper.game
+fr.mathieubour.minesweeper.packets
+fr.mathieubour.minesweeper.server
+fr.mathieubour.minesweeper.server.handlers
+fr.mathieubour.minesweeper.server.network
+fr.mathieubour.minesweeper.server.routines
+fr.mathieubour.minesweeper.server.states
+fr.mathieubour.minesweeper.utils

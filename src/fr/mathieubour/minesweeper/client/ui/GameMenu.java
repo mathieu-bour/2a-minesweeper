@@ -5,13 +5,13 @@ import fr.mathieubour.minesweeper.client.panels.ChatPanel;
 import fr.mathieubour.minesweeper.client.panels.FieldPanel;
 import fr.mathieubour.minesweeper.client.panels.LoginPanel;
 import fr.mathieubour.minesweeper.client.panels.ScoreboardPanel;
-import fr.mathieubour.minesweeper.client.views.WaitingView;
 import fr.mathieubour.minesweeper.client.states.ClientGameState;
 import fr.mathieubour.minesweeper.client.states.PlayerState;
+import fr.mathieubour.minesweeper.client.views.WaitingView;
 import fr.mathieubour.minesweeper.game.Player;
 
 import javax.swing.*;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * The main menu.
@@ -20,15 +20,6 @@ public class GameMenu extends JMenuBar {
     private static GameMenu instance;
 
     public GameMenu() {
-        // Add menu items to their parent menu
-
-        // Server
-        JMenu serverMenu = new JMenu("Server");
-        JMenuItem connectMenuItem = new JMenuItem("Connect");
-        serverMenu.add(connectMenuItem);
-        JMenuItem disconnectMenuItem = new JMenuItem("Disconnect");
-        serverMenu.add(disconnectMenuItem);
-
         // Debug
         JMenu debugMenu = new JMenu("Debug");
         JMenuItem loginItemMenu = new JMenuItem("Login");
@@ -44,7 +35,6 @@ public class GameMenu extends JMenuBar {
         debugMenu.add(gameItemMenu);
 
         // Add menus to the menu bar
-        add(serverMenu);
         add(debugMenu);
 
         // Add actions
@@ -54,7 +44,7 @@ public class GameMenu extends JMenuBar {
             client.revalidate();
         });
         waitingItemMenu.addActionListener(actionEvent -> {
-            HashMap<String, Player> p = new HashMap<>();
+            ConcurrentHashMap<String, Player> p = new ConcurrentHashMap<>();
 
             Player p1 = new Player("P1");
             p1.setId("1");
@@ -91,7 +81,7 @@ public class GameMenu extends JMenuBar {
             client.revalidate();
         });
         scoreboardItemMenu.addActionListener(actionEvent -> {
-            HashMap<String, Player> p = new HashMap<>();
+            ConcurrentHashMap<String, Player> p = new ConcurrentHashMap<>();
 
             Player p1 = new Player("P1");
             Player p2 = new Player("P2");

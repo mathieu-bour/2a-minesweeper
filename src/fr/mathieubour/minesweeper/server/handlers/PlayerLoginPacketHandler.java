@@ -1,20 +1,13 @@
 package fr.mathieubour.minesweeper.server.handlers;
 
-import fr.mathieubour.minesweeper.game.Level;
-import fr.mathieubour.minesweeper.game.LevelDifficulty;
-import fr.mathieubour.minesweeper.game.Player;
-import fr.mathieubour.minesweeper.packets.*;
+import fr.mathieubour.minesweeper.packets.PlayerListPacket;
+import fr.mathieubour.minesweeper.packets.PlayerLoginPacket;
 import fr.mathieubour.minesweeper.server.Server;
 import fr.mathieubour.minesweeper.server.network.ServerInputThread;
 import fr.mathieubour.minesweeper.server.network.ServerSocketHandler;
 import fr.mathieubour.minesweeper.server.routines.ScheduleGame;
 import fr.mathieubour.minesweeper.server.states.ServerGameState;
 import fr.mathieubour.minesweeper.utils.Log;
-
-import java.util.HashMap;
-import java.util.Random;
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class PlayerLoginPacketHandler {
     private static PlayerLoginPacketHandler instance;

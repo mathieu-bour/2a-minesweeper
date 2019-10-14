@@ -23,7 +23,7 @@ public class WaitingView extends JPanel {
         return instance;
     }
 
-    private void redraw() {
+    public void redraw() {
         removeAll();
         GridBagConstraints constraints = new GridBagConstraints();
         constraints.insets = new Insets(0, 0, 0, 0);

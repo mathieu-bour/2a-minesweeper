@@ -1,8 +1,8 @@
 package fr.mathieubour.minesweeper.client.handlers;
 
+import fr.mathieubour.minesweeper.client.Client;
 import fr.mathieubour.minesweeper.client.panels.ScoreboardPanel;
 import fr.mathieubour.minesweeper.client.states.ClientGameState;
-import fr.mathieubour.minesweeper.client.Client;
 import fr.mathieubour.minesweeper.client.views.GameView;
 import fr.mathieubour.minesweeper.packets.PlayerScorePacket;
 

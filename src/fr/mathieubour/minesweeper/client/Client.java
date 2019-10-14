@@ -57,6 +57,7 @@ public class Client extends JFrame {
                 ClientState.getInstance().setView(ClientView.HOME);
             } else if (view instanceof WaitingView) {
                 setSize(800, 600);
+                WaitingView.getInstance().redraw();
                 ClientState.getInstance().setView(ClientView.WAITING);
             } else if (view instanceof GameView) {
                 GameView.getInstance().redraw();

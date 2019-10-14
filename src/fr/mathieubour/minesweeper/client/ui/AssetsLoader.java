@@ -4,7 +4,7 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Load the images (the tiles textures) on start-up.
@@ -15,7 +15,7 @@ public class AssetsLoader {
     /**
      * The images, indexed by their filename.
      */
-    private final HashMap<String, ImageIcon> images = new HashMap<>();
+    private final ConcurrentHashMap<String, ImageIcon> images = new ConcurrentHashMap<>();
 
     /**
      * The images filenames to load.

@@ -2,13 +2,12 @@ package fr.mathieubour.minesweeper.client.states;
 
 import fr.mathieubour.minesweeper.game.Field;
 import fr.mathieubour.minesweeper.game.Player;
-import fr.mathieubour.minesweeper.utils.Log;
 
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class ClientGameState {
     private static ClientGameState instance;
-    protected final HashMap<String, Player> players = new HashMap<>();
+    protected final ConcurrentHashMap<String, Player> players = new ConcurrentHashMap<>();
     private Field field;
 
     public static synchronized ClientGameState getInstance() {
@@ -19,11 +18,11 @@ public class ClientGameState {
         return instance;
     }
 
-    public HashMap<String, Player> getPlayers() {
+    public ConcurrentHashMap<String, Player> getPlayers() {
         return players;
     }
 
-    public synchronized void setPlayers(HashMap<String, Player> serverPlayers) {
+    public synchronized void setPlayers(ConcurrentHashMap<String, Player> serverPlayers) {
         getPlayers().forEach((uuid, player) -> {
             if (!serverPlayers.containsKey(uuid)) {
                 getPlayers().remove(uuid);

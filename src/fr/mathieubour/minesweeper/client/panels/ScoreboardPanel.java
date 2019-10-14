@@ -5,12 +5,12 @@ import fr.mathieubour.minesweeper.game.Player;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class ScoreboardPanel extends JPanel {
     private static ScoreboardPanel instance;
-    private HashMap<String, ScorePanel> scorePanels = new HashMap<>();
+    private ConcurrentHashMap<String, ScorePanel> scorePanels = new ConcurrentHashMap<>();
 
     private ScoreboardPanel() {
         super(new GridBagLayout());
@@ -25,13 +25,13 @@ public class ScoreboardPanel extends JPanel {
         return instance;
     }
 
-    public HashMap<String, ScorePanel> getScorePanels() {
+    public ConcurrentHashMap<String, ScorePanel> getScorePanels() {
         return scorePanels;
     }
 
     public void redraw() {
         removeAll();
-        HashMap<String, Player> players = ClientGameState.getInstance().getPlayers();
+        ConcurrentHashMap<String, Player> players = ClientGameState.getInstance().getPlayers();
 
         GridBagConstraints constraints = new GridBagConstraints();
         constraints.anchor = GridBagConstraints.WEST;
